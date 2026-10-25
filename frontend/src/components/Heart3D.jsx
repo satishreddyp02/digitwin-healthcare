@@ -9,15 +9,13 @@ import * as THREE from "three";
  * 2. Ventricular Stroke Volume Ejection: Wall contraction amplitude mapped to Ejection Fraction (EF).
  * 3. Aortic Root Compliance Pulsation: Aortic expansion & recoil driven by MAP and Pulse Pressure.
  * 4. Cardiac Output (CO): Live calculation as HR * (EDV * EF) / 1000 L/min.
- * 
- * True 3D Anatomical Structures:
- * - Ventricles with muscular sulcus groove and apex orientation.
- * - Left & Right Atria and auricles.
- * - Ascending Aorta, Aortic Arch with 3 brachiocephalic branch buds.
- * - Pulmonary Trunk with Left/Right branching beneath aorta.
- * - Superior Vena Cava and Inferior Vena Cava.
- * - Left Anterior Descending (LAD) and Right Coronary Arteries (RCA) on epicardium.
- * - Coronal Dissection mode exposing LV cavity and myocardial wall.
+ * 5. Anatomical Coronal Dissection: True Left Ventricular cavity cutaway with:
+ *    - 12 mm muscular myocardium wall thickness cross-section
+ *    - Ruby endocardial cavity lumen
+ *    - Anterolateral and posteromedial papillary muscle columns
+ *    - White fibrous chordae tendineae (heart strings)
+ *    - Mitral valve annulus
+ *    - Interventricular septum (IVS)
  */
 export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 120 }) {
   const mountRef = useRef(null);
@@ -55,13 +53,19 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
     camera.position.set(0, 0, 16);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // CRITICAL: Enable local clipping planes for true anatomical cutaway!
+    renderer.localClippingEnabled = true;
 
     container.innerHTML = "";
     container.appendChild(renderer.domElement);
@@ -103,7 +107,11 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
     heartTexture.wrapS = THREE.RepeatWrapping;
     heartTexture.wrapT = THREE.RepeatWrapping;
 
-    // 3. PBR Materials with Wet Specular Clearcoat
+    // 3. Local Cutting Plane for Ventricular Coronal Dissection
+    const localCutPlane = new THREE.Plane(new THREE.Vector3(0.18, 0.0, -1).normalize(), 0.12);
+    const worldCutPlane = new THREE.Plane();
+
+    // 4. PBR Materials with Wet Specular Clearcoat
     const muscleMaterial = new THREE.MeshPhysicalMaterial({
       map: heartTexture,
       color: 0x93202f,
@@ -113,13 +121,8 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
       clearcoatRoughness: 0.2,
       reflectivity: 0.6,
       side: crossSection ? THREE.DoubleSide : THREE.FrontSide,
-    });
-
-    const muscleCavityMaterial = new THREE.MeshStandardMaterial({
-      color: 0x5a0f19,
-      roughness: 0.6,
-      metalness: 0.02,
-      side: THREE.BackSide,
+      clippingPlanes: crossSection ? [worldCutPlane] : [],
+      clipShadows: true,
     });
 
     const aortaMaterial = new THREE.MeshPhysicalMaterial({
@@ -149,25 +152,31 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
       color: 0xd92638,
       roughness: 0.25,
       metalness: 0.1,
+      clippingPlanes: crossSection ? [worldCutPlane] : [],
+      clipShadows: true,
     });
 
-    // 4. Photorealistic Multi-Point Surgical Lighting
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    // 5. Photorealistic Multi-Point Surgical Lighting
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.45);
     keyLight.position.set(6, 8, 10);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0xffa8b5, 1.1); // Warm biological rim light
+    const rimLight = new THREE.DirectionalLight(0xffa8b5, 1.15); // Warm biological rim light
     rimLight.position.set(-8, -4, -6);
     scene.add(rimLight);
 
-    const fillLight = new THREE.DirectionalLight(0x8cb5df, 0.7); // Subtle deoxygenated blue fill
+    const fillLight = new THREE.DirectionalLight(0x8cb5df, 0.75); // Subtle deoxygenated blue fill
     fillLight.position.set(-6, 6, 6);
     scene.add(fillLight);
+
+    const cavityLight = new THREE.PointLight(0xff99aa, crossSection ? 1.6 : 0, 10);
+    cavityLight.position.set(0.4, 0.3, 1.8);
+    scene.add(cavityLight);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambientLight);
 
-    // 5. Construct Anatomical Organ Meshes in Root Group
+    // 6. Construct Anatomical Organ Meshes in Root Group
     const heartGroup = new THREE.Group();
     scene.add(heartGroup);
     heartGroupRef.current = heartGroup;
@@ -210,13 +219,138 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
     rvMesh.rotation.z = THREE.MathUtils.degToRad(8);
     ventGroup.add(rvMesh);
 
-    // If Cross-Section mode: internal cavity mesh
+    // --- INTERNAL ANATOMICAL DISSECTION STRUCTURES (LV CAVITY) ---
     if (crossSection) {
-      const cavityGeo = new THREE.SphereGeometry(1.6, 24, 24);
-      cavityGeo.scale(0.8, 1.25, 0.7);
-      const cavityMesh = new THREE.Mesh(cavityGeo, muscleCavityMaterial);
-      cavityMesh.position.set(0.35, 0.1, 0);
-      ventGroup.add(cavityMesh);
+      const cavityGroup = new THREE.Group();
+      cavityGroup.position.set(0.3, 0.2, 0);
+      cavityGroup.rotation.z = THREE.MathUtils.degToRad(-10);
+      ventGroup.add(cavityGroup);
+
+      // A. Deep Ruby Endocardial Cavity Lining
+      const endoGeo = new THREE.SphereGeometry(1.82, 32, 32);
+      endoGeo.scale(0.82, 1.32, 0.75);
+      const endoPos = endoGeo.attributes.position;
+      for (let i = 0; i < endoPos.count; i++) {
+        const y = endoPos.getY(i);
+        if (y < 0) {
+          const factor = 1 - Math.abs(y / 3.2) * 0.45;
+          endoPos.setX(i, endoPos.getX(i) * factor);
+          endoPos.setZ(i, endoPos.getZ(i) * factor);
+        }
+      }
+      endoGeo.computeVertexNormals();
+
+      const endoMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x560814, // Deep rich ruby endocardium
+        roughness: 0.4,
+        metalness: 0.05,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.15,
+        side: THREE.BackSide,
+      });
+      const endoMesh = new THREE.Mesh(endoGeo, endoMaterial);
+      endoMesh.position.set(0, 0, -0.05);
+      cavityGroup.add(endoMesh);
+
+      // B. Cut Myocardial Wall Thickness (12 mm Wall Cross-Section Edge)
+      const wallShape = new THREE.Shape();
+      wallShape.absellipse(0, -0.15, 2.08, 2.82, 0, Math.PI * 2, false, 0);
+      const holePath = new THREE.Path();
+      holePath.absellipse(0, -0.15, 1.48, 2.18, 0, Math.PI * 2, true, 0);
+      wallShape.holes.push(holePath);
+
+      const wallGeo = new THREE.ShapeGeometry(wallShape, 32);
+      const wallCutMaterial = new THREE.MeshStandardMaterial({
+        color: 0x8a1826, // Muscular myocardial cross-section
+        roughness: 0.55,
+        metalness: 0.04,
+        side: THREE.DoubleSide,
+      });
+      const cutWallMesh = new THREE.Mesh(wallGeo, wallCutMaterial);
+      cutWallMesh.position.set(0.04, 0, 0.13);
+      cutWallMesh.rotation.y = THREE.MathUtils.degToRad(-10);
+      cavityGroup.add(cutWallMesh);
+
+      // C. Interventricular Septum (IVS)
+      const septumGeo = new THREE.BoxGeometry(0.55, 3.1, 1.8);
+      const septumMaterial = new THREE.MeshStandardMaterial({
+        color: 0x7c1422,
+        roughness: 0.5,
+      });
+      const septumMesh = new THREE.Mesh(septumGeo, septumMaterial);
+      septumMesh.position.set(-0.95, -0.1, -0.2);
+      cavityGroup.add(septumMesh);
+
+      // D. Papillary Muscles
+      const papMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x7a1120,
+        roughness: 0.38,
+        clearcoat: 0.4,
+      });
+
+      // Anterolateral Papillary Muscle Column
+      const pap1Curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.55, -1.3, -0.25),
+        new THREE.Vector3(-0.45, -0.6, -0.05),
+        new THREE.Vector3(-0.35, 0.35, 0.02),
+      ]);
+      const pap1Mesh = new THREE.Mesh(
+        new THREE.TubeGeometry(pap1Curve, 16, 0.22, 12, false),
+        papMaterial
+      );
+      cavityGroup.add(pap1Mesh);
+
+      // Posteromedial Papillary Muscle Column
+      const pap2Curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.5, -1.35, -0.3),
+        new THREE.Vector3(0.42, -0.65, -0.15),
+        new THREE.Vector3(0.32, 0.3, -0.05),
+      ]);
+      const pap2Mesh = new THREE.Mesh(
+        new THREE.TubeGeometry(pap2Curve, 16, 0.2, 12, false),
+        papMaterial
+      );
+      cavityGroup.add(pap2Mesh);
+
+      // E. Chordae Tendineae (Fibrous Heart Strings)
+      const chordaeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xf8fafc, // Pearly white fibrous tendons
+        roughness: 0.25,
+        metalness: 0.02,
+      });
+
+      const chordaePoints = [
+        [new THREE.Vector3(-0.35, 0.35, 0.02), new THREE.Vector3(-0.4, 1.4, -0.1)],
+        [new THREE.Vector3(-0.35, 0.35, 0.02), new THREE.Vector3(-0.15, 1.45, -0.02)],
+        [new THREE.Vector3(-0.35, 0.35, 0.02), new THREE.Vector3(0.1, 1.42, -0.08)],
+        [new THREE.Vector3(0.32, 0.3, -0.05), new THREE.Vector3(0.38, 1.4, -0.12)],
+        [new THREE.Vector3(0.32, 0.3, -0.05), new THREE.Vector3(0.12, 1.45, -0.02)],
+        [new THREE.Vector3(0.32, 0.3, -0.05), new THREE.Vector3(-0.1, 1.4, -0.18)],
+      ];
+
+      chordaePoints.forEach(([p1, p2]) => {
+        const lineCurve = new THREE.LineCurve3(p1, p2);
+        const cordMesh = new THREE.Mesh(
+          new THREE.TubeGeometry(lineCurve, 8, 0.032, 6, false),
+          chordaeMaterial
+        );
+        cavityGroup.add(cordMesh);
+      });
+
+      // F. Mitral Valve Inflow Annulus & Leaflets
+      const valveMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xf1f5f9,
+        roughness: 0.2,
+        metalness: 0.05,
+        clearcoat: 0.5,
+        transparent: true,
+        opacity: 0.88,
+      });
+      const valveRingGeo = new THREE.TorusGeometry(0.72, 0.07, 14, 28);
+      const valveRingMesh = new THREE.Mesh(valveRingGeo, valveMaterial);
+      valveRingMesh.position.set(0, 1.42, -0.1);
+      valveRingMesh.rotation.x = THREE.MathUtils.degToRad(85);
+      cavityGroup.add(valveRingMesh);
     }
 
     // --- ATRIA & AURICLES (Superior Posterior Chambers) ---
@@ -311,10 +445,13 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
       new THREE.Vector3(0.6, 0.4, 0.8),
       new THREE.Vector3(1.1, -0.2, 0.5),
     ]);
-    const diag1Mesh = new THREE.Mesh(new THREE.TubeGeometry(diag1Curve, 14, 0.05, 8, false), coronaryArteryMaterial);
+    const diag1Mesh = new THREE.Mesh(
+      new THREE.TubeGeometry(diag1Curve, 14, 0.05, 8, false),
+      coronaryArteryMaterial
+    );
     heartGroup.add(diag1Mesh);
 
-    // 6. Interactive Orbit Controls via Mouse Drag
+    // 7. Interactive Orbit Controls via Mouse Drag
     const onMouseDown = (e) => {
       isDraggingRef.current = true;
       mousePosRef.current = { x: e.clientX, y: e.clientY };
@@ -337,7 +474,11 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
 
     const onWheel = (e) => {
       if (!cameraRef.current) return;
-      cameraRef.current.position.z = THREE.MathUtils.clamp(cameraRef.current.position.z + e.deltaY * 0.015, 8, 26);
+      cameraRef.current.position.z = THREE.MathUtils.clamp(
+        cameraRef.current.position.z + e.deltaY * 0.015,
+        8,
+        26
+      );
     };
 
     container.addEventListener("mousedown", onMouseDown);
@@ -368,7 +509,7 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd);
 
-    // 7. Biophysically-Synchronized Contraction Animation Loop
+    // 8. Biophysically-Synchronized Contraction Animation Loop
     let animId;
     let startTime = performance.now();
 
@@ -387,6 +528,11 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
         contraction = Math.sin((phase / 0.35) * Math.PI) * efFrac;
       } else {
         contraction = Math.max(0, Math.sin(Math.PI) * Math.exp(-(phase - 0.35) * 4.5));
+      }
+
+      // Keep world clipping plane locked to heart rotation when cutaway is enabled
+      if (crossSection && ventriclesRef.current) {
+        worldCutPlane.copy(localCutPlane).applyMatrix4(ventriclesRef.current.matrixWorld);
       }
 
       // Ventricular volumetric displacement
@@ -409,7 +555,7 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
 
       // Subtle resting idle orbit when not dragging
       if (!isDraggingRef.current && heartGroupRef.current) {
-        heartGroupRef.current.rotation.y += 0.002;
+        heartGroupRef.current.rotation.y += 0.0018;
       }
 
       renderer.render(scene, camera);
@@ -454,6 +600,20 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
       heartGroupRef.current.rotation.set(THREE.MathUtils.degToRad(55), 0, 0);
     } else if (preset === "posterior") {
       heartGroupRef.current.rotation.set(0, THREE.MathUtils.degToRad(165), THREE.MathUtils.degToRad(-10));
+    }
+  };
+
+  // Toggle LV cavity cutaway and orient to optimal viewing angle
+  const handleToggleCutaway = () => {
+    const nextState = !crossSection;
+    setCrossSection(nextState);
+    if (nextState && heartGroupRef.current) {
+      // Angle slightly to reveal interior chamber lumen directly
+      heartGroupRef.current.rotation.set(
+        THREE.MathUtils.degToRad(4),
+        THREE.MathUtils.degToRad(-10),
+        THREE.MathUtils.degToRad(-8)
+      );
     }
   };
 
@@ -511,14 +671,14 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
 
           <button
             type="button"
-            onClick={() => setCrossSection(!crossSection)}
-            className={`px-2.5 py-1.5 rounded border transition font-medium ${
+            onClick={handleToggleCutaway}
+            className={`px-3 py-1.5 rounded border transition font-semibold flex items-center gap-1.5 shadow-sm ${
               crossSection
-                ? "bg-rose-700 text-white border-rose-700 shadow-sm"
-                : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
+                ? "bg-rose-700 text-white border-rose-700 ring-2 ring-rose-200"
+                : "bg-teal-50 text-teal-800 border-teal-300 hover:bg-teal-100"
             }`}
           >
-            {crossSection ? "Exterior Anatomy" : "LV Cavity Cutaway"}
+            <span>{crossSection ? "Exterior Anatomy" : "LV Cavity Cutaway"}</span>
           </button>
         </div>
       </div>
@@ -534,8 +694,8 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
             <span>Click &amp; drag to rotate 360&deg; &bull; Scroll to zoom</span>
           </div>
 
-          {/* Interactive Anatomical Callouts */}
-          {showLabels && (
+          {/* Exterior Anatomical Callouts */}
+          {showLabels && !crossSection && (
             <div className="absolute top-3 left-3 space-y-1.5 pointer-events-none">
               <span className="text-[11px] bg-white/90 text-red-950 font-semibold px-2 py-0.5 rounded border border-red-200 backdrop-blur-sm block shadow-sm">
                 &bull; Aorta &amp; Arch Branches
@@ -548,6 +708,24 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
               </span>
               <span className="text-[11px] bg-white/90 text-gray-900 font-semibold px-2 py-0.5 rounded border border-gray-200 backdrop-blur-sm block shadow-sm">
                 &bull; Left &amp; Right Ventricles
+              </span>
+            </div>
+          )}
+
+          {/* Dissection Cutaway Internal Anatomical Callouts */}
+          {showLabels && crossSection && (
+            <div className="absolute top-3 left-3 space-y-1.5 pointer-events-none">
+              <span className="text-[11px] bg-white/95 text-rose-950 font-semibold px-2 py-0.5 rounded border border-rose-300 backdrop-blur-sm block shadow-sm">
+                &bull; LV Myocardial Wall Cross-Section (12 mm)
+              </span>
+              <span className="text-[11px] bg-white/95 text-red-950 font-semibold px-2 py-0.5 rounded border border-red-300 backdrop-blur-sm block shadow-sm">
+                &bull; Internal Left Ventricular Lumen
+              </span>
+              <span className="text-[11px] bg-white/95 text-amber-950 font-semibold px-2 py-0.5 rounded border border-amber-300 backdrop-blur-sm block shadow-sm">
+                &bull; Papillary Muscles &amp; Chordae Tendineae
+              </span>
+              <span className="text-[11px] bg-white/95 text-slate-900 font-semibold px-2 py-0.5 rounded border border-slate-300 backdrop-blur-sm block shadow-sm">
+                &bull; Interventricular Septum (IVS)
               </span>
             </div>
           )}
@@ -586,9 +764,13 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
           </div>
 
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2 text-xs">
-            <span className="font-semibold text-gray-800 block">0D Windkessel Coupling:</span>
+            <span className="font-semibold text-gray-800 block">
+              {crossSection ? "LV Cavity Cutaway Anatomy:" : "0D Windkessel Coupling:"}
+            </span>
             <p className="text-gray-600 leading-relaxed text-[11px]">
-              The 3D cardiac digital twin maps its pumping frequency directly to simulated heart rate (T = {((60 / Math.max(35, hr))).toFixed(2)}s). Left ventricular inward deflection corresponds to {ef}% Ejection Fraction, and radial expansion of the aortic root simulates Windkessel compliance under {map} mmHg Mean Arterial Pressure.
+              {crossSection
+                ? `Coronal dissection exposes the internal left ventricular lumen (EDV ${edv} mL → ESV ${esv} mL). Notice the thick 12 mm muscular myocardium wall, dual anterolateral and posteromedial papillary muscle columns, and white fibrous chordae tendineae anchored to the mitral valve ring.`
+                : `The 3D cardiac digital twin maps its pumping frequency directly to simulated heart rate (T = ${(60 / Math.max(35, hr)).toFixed(2)}s). Left ventricular inward deflection corresponds to ${ef}% Ejection Fraction, and radial expansion of the aortic root simulates Windkessel compliance under ${map} mmHg Mean Arterial Pressure.`}
             </p>
           </div>
         </div>
