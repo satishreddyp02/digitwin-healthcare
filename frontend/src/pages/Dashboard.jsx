@@ -7,6 +7,9 @@ import HRChart from "../components/HRChart.jsx";
 import PatientForm from "../components/PatientForm.jsx";
 import RiskPanel from "../components/RiskPanel.jsx";
 import Trend from "../components/Trend.jsx";
+import Heart3D from "../components/Heart3D.jsx";
+import DrugsTab from "../components/DrugsTab.jsx";
+import HistoryTab from "../components/HistoryTab.jsx";
 import { Num } from "../components/ui.jsx";
 
 const riskBadge = {
@@ -18,8 +21,11 @@ const riskBadge = {
 export default function Dashboard() {
   const [drugs, setDrugs] = useState({});
   const [health, setHealth] = useState({ version: "0.2", ml_model_loaded: true });
+  const [mainView, setMainView] = useState("workstation"); // "workstation" | "heart3d" | "drugs" | "history"
   const [activeTab, setActiveTab] = useState("bp");
   const [patient, setPatient] = useState({
+    name: "Demo Patient",
+    patient_id: "PT-8291",
     age: 58,
     sex: "male",
     hr: 72,
@@ -27,6 +33,9 @@ export default function Dashboard() {
     sbp: 145,
     dbp: 92,
     edv_ml: 120,
+    medical_history: "Essential hypertension (Stage 1)",
+    allergies: "No known drug allergies",
+    current_medications: "None",
     south_asian_seeding: true,
   });
   const [regimen, setRegimen] = useState([
@@ -98,26 +107,96 @@ export default function Dashboard() {
     let newHorizon = horizon;
 
     if (type === "vasopressor") {
-      newPatient = { age: 58, sex: "male", hr: 65, ef: 55, sbp: 91, dbp: 56, edv_ml: 120, south_asian_seeding: false };
+      newPatient = {
+        name: "Case 61 (VitalDB)",
+        patient_id: "SNU-0061",
+        age: 58,
+        sex: "male",
+        hr: 65,
+        ef: 55,
+        sbp: 91,
+        dbp: 56,
+        edv_ml: 120,
+        medical_history: "Intraoperative hypotension during laparotomy",
+        allergies: "No known drug allergies",
+        current_medications: "Sevoflurane inhalation, Rocuronium",
+        south_asian_seeding: false,
+      };
       newRegimen = [{ drug: "phenylephrine", dose_mg: 0.1, interval_h: 0.5, n_doses: 2 }];
       newHorizon = 2;
     } else if (type === "hypertension") {
-      newPatient = { age: 62, sex: "male", hr: 82, ef: 52, sbp: 168, dbp: 102, edv_ml: 125, south_asian_seeding: true };
+      newPatient = {
+        name: "Robert Chen",
+        patient_id: "PT-4820",
+        age: 62,
+        sex: "male",
+        hr: 82,
+        ef: 52,
+        sbp: 168,
+        dbp: 102,
+        edv_ml: 125,
+        medical_history: "Essential hypertension (Stage 2), Hyperlipidemia",
+        allergies: "Penicillin (rash)",
+        current_medications: "Atorvastatin 20mg",
+        south_asian_seeding: true,
+      };
       newRegimen = [
         { drug: "amlodipine", dose_mg: 10, interval_h: 24, n_doses: 2 },
         { drug: "enalapril", dose_mg: 20, interval_h: 12, n_doses: 4 },
       ];
       newHorizon = 48;
     } else if (type === "normotensive") {
-      newPatient = { age: 45, sex: "female", hr: 70, ef: 60, sbp: 120, dbp: 80, edv_ml: 120, south_asian_seeding: false };
+      newPatient = {
+        name: "Sarah Miller",
+        patient_id: "PT-1943",
+        age: 45,
+        sex: "female",
+        hr: 70,
+        ef: 60,
+        sbp: 120,
+        dbp: 80,
+        edv_ml: 120,
+        medical_history: "None (Annual wellness check)",
+        allergies: "No known drug allergies",
+        current_medications: "Multivitamin",
+        south_asian_seeding: false,
+      };
       newRegimen = [{ drug: "amlodipine", dose_mg: 5, interval_h: 24, n_doses: 1 }];
       newHorizon = 24;
     } else if (type === "stiff_aorta") {
-      newPatient = { age: 78, sex: "female", hr: 68, ef: 50, sbp: 172, dbp: 68, edv_ml: 115, south_asian_seeding: true };
+      newPatient = {
+        name: "Eleanor Vance",
+        patient_id: "PT-7731",
+        age: 78,
+        sex: "female",
+        hr: 68,
+        ef: 50,
+        sbp: 172,
+        dbp: 68,
+        edv_ml: 115,
+        medical_history: "Isolated systolic hypertension, vascular calcification",
+        allergies: "Sulfa antibiotics",
+        current_medications: "Calcium + Vitamin D",
+        south_asian_seeding: true,
+      };
       newRegimen = [{ drug: "metoprolol", dose_mg: 50, interval_h: 12, n_doses: 2 }];
       newHorizon = 24;
     } else if (type === "overdose") {
-      newPatient = { age: 50, sex: "male", hr: 75, ef: 55, sbp: 118, dbp: 74, edv_ml: 120, south_asian_seeding: false };
+      newPatient = {
+        name: "James Wilson",
+        patient_id: "PT-9012",
+        age: 50,
+        sex: "male",
+        hr: 75,
+        ef: 55,
+        sbp: 118,
+        dbp: 74,
+        edv_ml: 120,
+        medical_history: "Depression, Mild hypertension",
+        allergies: "Codeine",
+        current_medications: "Sertraline 50mg",
+        south_asian_seeding: false,
+      };
       newRegimen = [
         { drug: "amlodipine", dose_mg: 40, interval_h: 24, n_doses: 1 },
         { drug: "enalapril", dose_mg: 80, interval_h: 24, n_doses: 1 },
@@ -129,6 +208,22 @@ export default function Dashboard() {
     setRegimen(newRegimen);
     setHorizon(newHorizon);
     executeSimulation(newPatient, newRegimen, newHorizon);
+  };
+
+  const handleRestoreSession = (run) => {
+    if (run.request?.patient) {
+      setPatient(run.request.patient);
+    }
+    if (run.request?.regimen) {
+      setRegimen(run.request.regimen);
+    }
+    if (run.request?.horizon_h) {
+      setHorizon(run.request.horizon_h);
+    }
+    if (run.result) {
+      setResult(run.result);
+    }
+    setMainView("workstation");
   };
 
   const setR = (i) => (k) => (v) => setRegimen((r) => r.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
@@ -214,6 +309,63 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* Primary View Navigation Bar */}
+        <div className="bg-slate-800 border-t border-slate-700/60 px-6 lg:px-10 py-2 flex flex-wrap items-center justify-between gap-3">
+          <nav className="flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setMainView("workstation")}
+              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+                mainView === "workstation"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-300 hover:text-white hover:bg-slate-700"
+              }`}
+            >
+              <span>Simulation Workstation</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMainView("heart3d")}
+              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+                mainView === "heart3d"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-300 hover:text-white hover:bg-slate-700"
+              }`}
+            >
+              <span>3D Cardiac Digital Twin</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMainView("drugs")}
+              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+                mainView === "drugs"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-300 hover:text-white hover:bg-slate-700"
+              }`}
+            >
+              <span>Virtual Drug Trial</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMainView("history")}
+              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+                mainView === "history"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-300 hover:text-white hover:bg-slate-700"
+              }`}
+            >
+              <span>Session History (SQLite)</span>
+            </button>
+          </nav>
+
+          <div className="text-[11px] text-slate-300 font-mono hidden md:flex items-center gap-2">
+            <span className="text-slate-400">Current Session:</span>
+            <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-teal-400 font-semibold">
+              {patient.name} ({patient.patient_id})
+            </span>
+          </div>
+        </div>
       </header>
 
       {/* Model Details Drawer */}
@@ -250,14 +402,47 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* 2. FULL-WIDTH DESKTOP WORKSPACE */}
+      {/* 2. MAIN APPLICATION CONTENT */}
       <main className="flex-1 w-full px-6 lg:px-10 py-6 space-y-6">
-        {/* Quick Clinical Scenarios Bar */}
-        <div className="bg-white border border-gray-200 rounded-lg p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500 mr-1">
-              Patient Scenarios:
-            </span>
+        {/* 3D Heart View */}
+        {mainView === "heart3d" && (
+          <div className="space-y-6 w-full">
+            <Heart3D
+              sbp={result ? (result.series.at(-1)?.sbp || result.baseline.sbp) : (patient.sbp || 120)}
+              dbp={result ? (result.series.at(-1)?.dbp || result.baseline.dbp) : (patient.dbp || 80)}
+              hr={result ? (result.series.at(-1)?.hr || result.baseline.hr) : (patient.hr || 72)}
+              ef={patient.ef || 55}
+              edv={patient.edv_ml || 120}
+            />
+          </div>
+        )}
+
+        {/* Virtual Drug Trial Tab */}
+        {mainView === "drugs" && (
+          <DrugsTab
+            drugs={drugs}
+            onSelectScenario={(scId) => {
+              applyPreset(scId);
+              setMainView("workstation");
+            }}
+            result={result}
+          />
+        )}
+
+        {/* Clinical Session History Tab (SQLite) */}
+        {mainView === "history" && (
+          <HistoryTab onLoadSession={handleRestoreSession} />
+        )}
+
+        {/* Primary Simulation Workstation View */}
+        {mainView === "workstation" && (
+          <>
+            {/* Quick Clinical Scenarios Bar */}
+            <div className="bg-white border border-gray-200 rounded-lg p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 mr-1">
+                  Patient Scenarios:
+                </span>
             <button
               type="button"
               onClick={() => applyPreset("vasopressor")}
@@ -632,6 +817,8 @@ export default function Dashboard() {
               </span>
             </div>
           </section>
+        )}
+          </>
         )}
       </main>
     </div>

@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field
 
 
 class Patient(BaseModel):
+    patient_id: Optional[str] = Field("PT-8291", description="Unique clinical patient identifier")
+    name: Optional[str] = Field("Demo Patient", description="Patient name")
     age: float = Field(55, ge=18, le=100)
     sex: str = Field("male", pattern="^(male|female)$")
     hr: float = Field(75, ge=40, le=160, description="resting heart rate, bpm")
@@ -10,6 +12,9 @@ class Patient(BaseModel):
     sbp: Optional[float] = Field(150, ge=70, le=260)
     dbp: Optional[float] = Field(95, ge=40, le=160)
     edv_ml: float = Field(120, ge=60, le=250)
+    medical_history: Optional[str] = Field("Essential hypertension", description="Clinical history")
+    allergies: Optional[str] = Field("No known drug allergies", description="Drug allergies")
+    current_medications: Optional[str] = Field("None", description="Home medications")
     south_asian_seeding: bool = True
 
 

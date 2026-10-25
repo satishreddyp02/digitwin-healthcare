@@ -36,3 +36,15 @@ export async function getHealth() {
     return { status: "offline", version: "unknown", ml_model_loaded: false };
   }
 }
+
+export async function getHistory(limit = 50) {
+  const r = await fetch(`${BASE}/history?limit=${limit}`);
+  if (!r.ok) throw new Error("Could not load simulation history.");
+  return r.json();
+}
+
+export async function getHistoryItem(runId) {
+  const r = await fetch(`${BASE}/history/${runId}`);
+  if (!r.ok) throw new Error("Could not load historical simulation record.");
+  return r.json();
+}

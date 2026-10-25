@@ -22,6 +22,52 @@ def test_simulation_is_logged_and_retrievable():
     assert client.get("/history/9999").status_code == 404
 
 
+def test_patient_profile_persisted_and_isolated():
+    # Simulate for Patient A
+    pA = {
+        "patient_id": "PT-A101",
+        "name": "Alice Medical",
+        "age": 52,
+        "sex": "female",
+        "hr": 74,
+        "ef": 0.58,
+        "sbp": 130,
+        "dbp": 82,
+        "medical_history": "Mild hypertension",
+        "allergies": "Penicillin",
+        "current_medications": "Aspirin 81mg",
+    }
+    rA = client.post("/simulate", json={"patient": pA, "regimen": [{"drug": "amlodipine", "dose_mg": 5}]}).json()
+    
+    # Simulate for Patient B
+    pB = {
+        "patient_id": "PT-B202",
+        "name": "Bob Surgical",
+        "age": 68,
+        "sex": "male",
+        "hr": 62,
+        "ef": 0.50,
+        "sbp": 90,
+        "dbp": 55,
+        "medical_history": "Post-op hypotension",
+        "allergies": "None",
+        "current_medications": "None",
+    }
+    rB = client.post("/simulate", json={"patient": pB, "regimen": [{"drug": "phenylephrine", "dose_mg": 0.1}]}).json()
+
+    # Query history and verify independent session records
+    histA = client.get(f"/history/{rA['run_id']}").json()
+    histB = client.get(f"/history/{rB['run_id']}").json()
+
+    assert histA["request"]["patient"]["patient_id"] == "PT-A101"
+    assert histA["request"]["patient"]["name"] == "Alice Medical"
+    assert histA["request"]["patient"]["allergies"] == "Penicillin"
+
+    assert histB["request"]["patient"]["patient_id"] == "PT-B202"
+    assert histB["request"]["patient"]["name"] == "Bob Surgical"
+    assert histB["request"]["patient"]["allergies"] == "None"
+
+
 def test_phenylephrine_raises_bp():
     r = client.post("/simulate", json={"regimen": [{"drug": "phenylephrine", "dose_mg": 0.1, "interval_h": 1, "n_doses": 1}],
                                        "horizon_h": 1, "n_points": 25}).json()

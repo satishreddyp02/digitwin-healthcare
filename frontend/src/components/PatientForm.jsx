@@ -23,6 +23,30 @@ export default function PatientForm({ patient, setPatient }) {
         <span className="text-xs text-gray-500 font-medium">Baseline</span>
       </div>
 
+      {/* Patient Identification Bar */}
+      <div className="grid grid-cols-2 gap-3.5 bg-gray-50 p-3 rounded-lg border border-gray-200 text-xs">
+        <div>
+          <span className="block font-bold text-gray-700 uppercase mb-1">Patient Name</span>
+          <input
+            type="text"
+            className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs font-medium text-gray-800 focus:border-teal-600 focus:outline-none"
+            value={patient.name || ""}
+            onChange={(e) => set("name")(e.target.value)}
+            placeholder="e.g. John Doe"
+          />
+        </div>
+        <div>
+          <span className="block font-bold text-gray-700 uppercase mb-1">Patient ID / MRN</span>
+          <input
+            type="text"
+            className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs font-mono font-medium text-gray-800 focus:border-teal-600 focus:outline-none"
+            value={patient.patient_id || ""}
+            onChange={(e) => set("patient_id")(e.target.value)}
+            placeholder="e.g. PT-8291"
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-3.5">
         <Num name="Age" unit="years" value={patient.age} onChange={set("age")} min={18} max={100} />
         <label className="block">
@@ -42,6 +66,48 @@ export default function PatientForm({ patient, setPatient }) {
         <Num name="Heart Rate" unit="bpm" value={patient.hr} onChange={set("hr")} min={30} max={220} />
         <Num name="Ejection Fraction" unit="%" value={patient.ef} onChange={set("ef")} min={15} max={85} />
       </div>
+
+      {/* Clinical Notes & Allergies (collapsible) */}
+      <details className="text-xs border border-gray-200 rounded-md p-2.5 bg-gray-50/50">
+        <summary className="font-semibold text-gray-700 cursor-pointer select-none flex items-center justify-between">
+          <span>Clinical History, Allergies & Home Meds</span>
+          <span className="text-[11px] text-teal-700 font-medium">Edit details &darr;</span>
+        </summary>
+        <div className="grid grid-cols-1 gap-2.5 pt-2.5 mt-2 border-t border-gray-200">
+          <div>
+            <span className="block font-semibold text-gray-600 mb-0.5">Medical History</span>
+            <input
+              type="text"
+              className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs text-gray-800 focus:border-teal-600 focus:outline-none"
+              value={patient.medical_history || ""}
+              onChange={(e) => set("medical_history")(e.target.value)}
+              placeholder="e.g. Essential hypertension, prior CABG"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <span className="block font-semibold text-gray-600 mb-0.5">Known Allergies</span>
+              <input
+                type="text"
+                className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs text-gray-800 focus:border-teal-600 focus:outline-none"
+                value={patient.allergies || ""}
+                onChange={(e) => set("allergies")(e.target.value)}
+                placeholder="e.g. Penicillin, NSAIDs"
+              />
+            </div>
+            <div>
+              <span className="block font-semibold text-gray-600 mb-0.5">Current Medications</span>
+              <input
+                type="text"
+                className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs text-gray-800 focus:border-teal-600 focus:outline-none"
+                value={patient.current_medications || ""}
+                onChange={(e) => set("current_medications")(e.target.value)}
+                placeholder="e.g. Metformin 500mg, Aspirin 81mg"
+              />
+            </div>
+          </div>
+        </div>
+      </details>
 
       {/* Calculated values */}
       <div className="bg-gray-50 border border-gray-200 rounded-md p-3 grid grid-cols-3 gap-2 text-center">
