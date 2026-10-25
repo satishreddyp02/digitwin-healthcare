@@ -17,7 +17,7 @@ export default function PatientForm({ patient, setPatient }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-        <h2 className="text-sm font-bold uppercase tracking-wide text-gray-700">
+        <h2 className="text-sm font-semibold text-gray-800">
           Patient Information
         </h2>
         <span className="text-xs text-gray-500 font-medium">Baseline</span>
@@ -26,7 +26,7 @@ export default function PatientForm({ patient, setPatient }) {
       {/* Patient Identification Bar */}
       <div className="grid grid-cols-2 gap-3.5 bg-gray-50 p-3 rounded-lg border border-gray-200 text-xs">
         <div>
-          <span className="block font-bold text-gray-700 uppercase mb-1">Patient Name</span>
+          <span className="block font-medium text-gray-700 mb-1">Patient Name</span>
           <input
             type="text"
             className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs font-medium text-gray-800 focus:border-teal-600 focus:outline-none"
@@ -36,10 +36,10 @@ export default function PatientForm({ patient, setPatient }) {
           />
         </div>
         <div>
-          <span className="block font-bold text-gray-700 uppercase mb-1">Patient ID / MRN</span>
+          <span className="block font-medium text-gray-700 mb-1">Patient ID / MRN</span>
           <input
             type="text"
-            className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs font-mono font-medium text-gray-800 focus:border-teal-600 focus:outline-none"
+            className="w-full border border-gray-300 bg-white px-2.5 py-1.5 rounded text-xs font-medium text-gray-800 focus:border-teal-600 focus:outline-none"
             value={patient.patient_id || ""}
             onChange={(e) => set("patient_id")(e.target.value)}
             placeholder="e.g. PT-8291"

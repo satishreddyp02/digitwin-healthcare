@@ -12,10 +12,10 @@ import {
 function CustomTooltip({ active, payload, label, unit }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-900/95 text-white border border-slate-700 p-3 rounded-lg shadow-2xl text-xs backdrop-blur-md min-w-[200px]">
-        <div className="font-mono text-slate-400 border-b border-slate-800 pb-1.5 mb-2 flex justify-between gap-4 text-xs">
+      <div className="bg-slate-900/95 text-white border border-slate-700 p-3 rounded-lg shadow-xl text-xs backdrop-blur-md min-w-[200px]">
+        <div className="text-slate-400 border-b border-slate-800 pb-1.5 mb-2 flex justify-between gap-4 text-xs font-medium">
           <span>Simulation Time:</span>
-          <span className="text-teal-400 font-bold">{label} hours</span>
+          <span className="text-teal-400 font-semibold tabular-nums">{label} hours</span>
         </div>
         <div className="space-y-1.5">
           {payload.map((entry, idx) => (
@@ -24,7 +24,7 @@ function CustomTooltip({ active, payload, label, unit }) {
                 <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: entry.color }} />
                 {entry.name}:
               </span>
-              <span className="font-mono font-bold text-white text-xs">
+              <span className="font-semibold text-white text-xs tabular-nums">
                 {typeof entry.value === "number" ? entry.value.toFixed(1) : entry.value} {unit}
               </span>
             </div>
@@ -40,10 +40,10 @@ export default function Trend({ title, data, lines, unit, refs = [], height = 30
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
           {title}
         </h3>
-        <span className="text-xs font-mono font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+        <span className="text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
           {unit}
         </span>
       </div>
@@ -53,12 +53,12 @@ export default function Trend({ title, data, lines, unit, refs = [], height = 30
             <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="t_h"
-              tick={{ fontSize: 12, fill: "#475569", fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}
+              tick={{ fontSize: 12, fill: "#475569", fontFamily: "Inter, -apple-system, sans-serif", fontWeight: 500 }}
               stroke="#CBD5E1"
               unit="h"
             />
             <YAxis
-              tick={{ fontSize: 12, fill: "#475569", fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}
+              tick={{ fontSize: 12, fill: "#475569", fontFamily: "Inter, -apple-system, sans-serif", fontWeight: 500 }}
               stroke="#CBD5E1"
               domain={["auto", "auto"]}
             />
@@ -74,7 +74,7 @@ export default function Trend({ title, data, lines, unit, refs = [], height = 30
                   fontSize: 11,
                   fill: r.color || "#E11D48",
                   position: "insideBottomRight",
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "Inter, -apple-system, sans-serif",
                   fontWeight: 600,
                 }}
               />

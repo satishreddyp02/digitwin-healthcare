@@ -316,7 +316,7 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => setMainView("workstation")}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
                 mainView === "workstation"
                   ? "bg-teal-600 text-white shadow-sm"
                   : "text-slate-300 hover:text-white hover:bg-slate-700"
@@ -327,18 +327,18 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => setMainView("heart3d")}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
                 mainView === "heart3d"
                   ? "bg-teal-600 text-white shadow-sm"
                   : "text-slate-300 hover:text-white hover:bg-slate-700"
               }`}
             >
-              <span>3D Cardiac Digital Twin</span>
+              <span>3D Cardiac View</span>
             </button>
             <button
               type="button"
               onClick={() => setMainView("drugs")}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
                 mainView === "drugs"
                   ? "bg-teal-600 text-white shadow-sm"
                   : "text-slate-300 hover:text-white hover:bg-slate-700"
@@ -349,19 +349,19 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={() => setMainView("history")}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
                 mainView === "history"
                   ? "bg-teal-600 text-white shadow-sm"
                   : "text-slate-300 hover:text-white hover:bg-slate-700"
               }`}
             >
-              <span>Session History (SQLite)</span>
+              <span>Session History</span>
             </button>
           </nav>
 
-          <div className="text-[11px] text-slate-300 font-mono hidden md:flex items-center gap-2">
+          <div className="text-xs text-slate-300 hidden md:flex items-center gap-2">
             <span className="text-slate-400">Current Session:</span>
-            <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-700 text-teal-400 font-semibold">
+            <span className="bg-slate-900 px-2.5 py-0.5 rounded border border-slate-700 text-teal-400 font-medium">
               {patient.name} ({patient.patient_id})
             </span>
           </div>
@@ -373,7 +373,7 @@ export default function Dashboard() {
         <div className="bg-white border-b border-gray-200 p-6 text-gray-700 text-sm w-full shadow-sm">
           <div className="w-full px-6 lg:px-10 grid md:grid-cols-3 gap-6">
             <div className="space-y-1.5 bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <span className="font-bold text-gray-900 text-xs uppercase tracking-wide block">
+              <span className="font-semibold text-gray-900 text-xs block">
                 0D Windkessel Model
               </span>
               <p className="text-gray-600 text-xs leading-relaxed">
@@ -382,8 +382,8 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-1.5 bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <span className="font-bold text-gray-900 text-xs uppercase tracking-wide block">
-                AI Short-Term Forecast
+              <span className="font-semibold text-gray-900 text-xs block">
+                Short-Term AI Forecast
               </span>
               <p className="text-gray-600 text-xs leading-relaxed">
                 Trained XGBoost model predicting blood pressure and heart rate 5 minutes ahead based on previous measurement trends.
@@ -391,8 +391,8 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-1.5 bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <span className="font-bold text-gray-900 text-xs uppercase tracking-wide block">
-                Drug Response
+              <span className="font-semibold text-gray-900 text-xs block">
+                Drug Response Engine
               </span>
               <p className="text-gray-600 text-xs leading-relaxed">
                 Phenylephrine response is fitted directly to clinical arterial line data from VitalDB Case 61. Other oral medications use standard literature parameters.
@@ -440,47 +440,47 @@ export default function Dashboard() {
             {/* Quick Clinical Scenarios Bar */}
             <div className="bg-white border border-gray-200 rounded-lg p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 mr-1">
+                <span className="text-xs font-semibold text-gray-500 mr-1">
                   Patient Scenarios:
                 </span>
             <button
               type="button"
               onClick={() => applyPreset("vasopressor")}
-              className="bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-3 py-1.5 rounded text-xs font-semibold transition"
+              className="bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 px-3 py-1.5 rounded text-xs font-medium transition"
             >
               Case 61 (Vasopressor)
             </button>
             <button
               type="button"
               onClick={() => applyPreset("hypertension")}
-              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-semibold transition"
+              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-medium transition"
             >
               High Blood Pressure
             </button>
             <button
               type="button"
               onClick={() => applyPreset("normotensive")}
-              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-semibold transition"
+              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-medium transition"
             >
               Normal Adult
             </button>
             <button
               type="button"
               onClick={() => applyPreset("stiff_aorta")}
-              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-semibold transition"
+              className="bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 px-3 py-1.5 rounded text-xs font-medium transition"
             >
               Elderly Patient
             </button>
             <button
               type="button"
               onClick={() => applyPreset("overdose")}
-              className="bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 px-3 py-1.5 rounded text-xs font-semibold transition"
+              className="bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 px-3 py-1.5 rounded text-xs font-medium transition"
             >
               Overdose Test
             </button>
           </div>
           <span className="text-xs text-gray-500 font-medium">
-            Click any scenario to populate baseline vitals & medications
+            Select a preset scenario to populate vitals & medications
           </span>
         </div>
 
@@ -495,7 +495,7 @@ export default function Dashboard() {
           <div className="lg:col-span-4 bg-white border border-gray-200 rounded-lg p-5 space-y-4 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-3.5">
-                <h2 className="text-sm font-bold uppercase tracking-wide text-gray-700">
+                <h2 className="text-sm font-semibold text-gray-800">
                   Medications
                 </h2>
                 <span className="text-xs text-gray-500 font-medium">Treatment Plan</span>
@@ -529,10 +529,10 @@ export default function Dashboard() {
           <div className="lg:col-span-3 bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4 flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <h2 className="text-sm font-bold uppercase tracking-wide text-gray-700">
-                  Simulation Time
+                <h2 className="text-sm font-semibold text-gray-800">
+                  Simulation Duration
                 </h2>
-                <span className="text-sm font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200">
+                <span className="text-xs font-semibold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200">
                   {horizon} hours
                 </span>
               </div>
@@ -565,7 +565,7 @@ export default function Dashboard() {
             <button
               onClick={() => executeSimulation(patient, regimen, horizon)}
               disabled={busy}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3.5 px-4 text-sm font-bold rounded-lg shadow-sm transition disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3.5 px-4 text-sm font-semibold rounded-lg shadow-sm transition disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
             >
               {busy ? "Running simulation..." : "Run Simulation"}
             </button>
@@ -591,11 +591,11 @@ export default function Dashboard() {
             {/* Parameters Bar */}
             <div className="bg-white border border-gray-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-sm w-full">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="font-bold text-gray-800 text-sm">Model Parameters:</span>
-                <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded border border-gray-200 font-mono">
+                <span className="font-semibold text-gray-800 text-sm">Model Parameters:</span>
+                <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded border border-gray-200 font-medium tabular-nums">
                   Resistance (R): {result.model.R} mmHg&middot;s/ml
                 </span>
-                <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded border border-gray-200 font-mono">
+                <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded border border-gray-200 font-medium tabular-nums">
                   Compliance (C): {result.model.C} ml/mmHg
                 </span>
                 <span className="text-gray-500">
@@ -603,7 +603,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="text-gray-500 font-medium">
-                Duration: {horizon} hours &bull; Calculation time: {result.latency_ms} ms
+                Duration: {horizon} hours &bull; Latency: {result.latency_ms} ms
               </div>
             </div>
 
@@ -612,18 +612,18 @@ export default function Dashboard() {
               {/* 1. Baseline */}
               <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-3">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-gray-600">
-                    1. Baseline Vitals
+                  <span className="text-xs font-semibold text-gray-700">
+                    Baseline Vitals
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-medium">
-                    Start
+                    Initial
                   </span>
                 </div>
 
                 <div>
-                  <div className="text-4xl font-bold text-gray-900 font-mono">
+                  <div className="text-3xl font-bold text-gray-900 tracking-tight tabular-nums">
                     {result.baseline.sbp}/{result.baseline.dbp}
-                    <span className="text-xs font-normal text-gray-500 ml-1 font-sans">mmHg</span>
+                    <span className="text-xs font-normal text-gray-500 ml-1.5">mmHg</span>
                   </div>
                   <span className="text-xs text-gray-500 block mt-1">
                     MAP: {result.baseline.map} mmHg &bull; Pulse Pressure: {result.baseline.sbp - result.baseline.dbp} mmHg
@@ -633,11 +633,11 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100 text-sm">
                   <div>
                     <span className="text-xs text-gray-500 block">Heart Rate</span>
-                    <span className="font-bold text-gray-800 text-base">{result.baseline.hr} bpm</span>
+                    <span className="font-semibold text-gray-800 text-base">{result.baseline.hr} bpm</span>
                   </div>
                   <div>
                     <span className="text-xs text-gray-500 block">Ejection Fraction</span>
-                    <span className="font-bold text-gray-800 text-base">{result.baseline.ef}%</span>
+                    <span className="font-semibold text-gray-800 text-base">{result.baseline.ef}%</span>
                   </div>
                 </div>
               </div>
@@ -645,8 +645,8 @@ export default function Dashboard() {
               {/* 2. AI Forecast */}
               <div className="bg-white border border-indigo-200 rounded-lg p-5 shadow-sm space-y-3">
                 <div className="flex items-center justify-between border-b border-indigo-50 pb-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-indigo-900">
-                    2. AI Forecast (5 min)
+                  <span className="text-xs font-semibold text-indigo-900">
+                    5-Minute Forecast (AI)
                   </span>
                   <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium border border-indigo-200">
                     XGBoost
@@ -655,9 +655,9 @@ export default function Dashboard() {
 
                 {aiForecast ? (
                   <div>
-                    <div className="text-4xl font-bold text-indigo-950 font-mono">
+                    <div className="text-3xl font-bold text-indigo-950 tracking-tight tabular-nums">
                       {aiForecast.sbp}/{aiForecast.dbp}
-                      <span className="text-xs font-normal text-indigo-600 ml-1 font-sans">mmHg</span>
+                      <span className="text-xs font-normal text-indigo-600 ml-1.5">mmHg</span>
                     </div>
                     <div className="text-xs text-indigo-700 font-medium mt-1">
                       <span>Change: SBP {(aiForecast.sbp - aiForecast.persistence.sbp) >= 0 ? "+" : ""}{(aiForecast.sbp - aiForecast.persistence.sbp).toFixed(1)}</span>
@@ -672,11 +672,11 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-3 pt-2 border-t border-indigo-50 text-sm">
                   <div>
                     <span className="text-xs text-indigo-600 block">Predicted HR</span>
-                    <span className="font-bold text-indigo-950 text-base">{aiForecast?.hr ?? "--"} bpm</span>
+                    <span className="font-semibold text-indigo-950 text-base">{aiForecast?.hr ?? "--"} bpm</span>
                   </div>
                   <div>
-                    <span className="text-xs text-indigo-600 block">Horizon</span>
-                    <span className="font-bold text-indigo-950 text-base">+5 minutes</span>
+                    <span className="text-xs text-indigo-600 block">Lead Time</span>
+                    <span className="font-semibold text-indigo-950 text-base">+5 minutes</span>
                   </div>
                 </div>
               </div>
@@ -684,8 +684,8 @@ export default function Dashboard() {
               {/* 3. Physics Simulation */}
               <div className="bg-white border border-teal-300 rounded-lg p-5 shadow-sm space-y-3">
                 <div className="flex items-center justify-between border-b border-teal-50 pb-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-teal-900">
-                    3. Simulated Outcome
+                  <span className="text-xs font-semibold text-teal-900">
+                    Simulated Outcome
                   </span>
                   <span className="text-xs bg-teal-50 text-teal-800 px-2 py-0.5 rounded font-medium border border-teal-200">
                     After {horizon}h
@@ -693,23 +693,23 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <div className="text-4xl font-bold text-teal-950 font-mono">
+                  <div className="text-3xl font-bold text-teal-950 tracking-tight tabular-nums">
                     {last.sbp}/{last.dbp}
-                    <span className="text-xs font-normal text-teal-700 ml-1 font-sans">mmHg</span>
+                    <span className="text-xs font-normal text-teal-700 ml-1.5">mmHg</span>
                   </div>
                   <span className="text-xs text-teal-800 block mt-1">
-                    Final MAP: {last.map} mmHg &bull; Change: {(last.map - result.baseline.map) >= 0 ? "+" : ""}{(last.map - result.baseline.map).toFixed(1)} mmHg
+                    Final MAP: {last.map} mmHg &bull; Delta: {(last.map - result.baseline.map) >= 0 ? "+" : ""}{(last.map - result.baseline.map).toFixed(1)} mmHg
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2 border-t border-teal-50 text-sm">
                   <div>
                     <span className="text-xs text-teal-700 block">Final Heart Rate</span>
-                    <span className="font-bold text-teal-950 text-base">{last.hr} bpm</span>
+                    <span className="font-semibold text-teal-950 text-base">{last.hr} bpm</span>
                   </div>
                   <div>
                     <span className="text-xs text-teal-700 block">Safety Status</span>
-                    <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded border ${riskBadge[result.risk]}`}>
+                    <span className={`text-xs font-semibold capitalize px-2 py-0.5 rounded border ${riskBadge[result.risk]}`}>
                       {result.risk}
                     </span>
                   </div>
@@ -725,9 +725,9 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("bp")}
-                    className={`px-4 py-2 rounded text-xs font-bold transition ${
+                    className={`px-4 py-2 rounded text-xs font-medium transition ${
                       activeTab === "bp"
-                        ? "bg-white text-gray-900 shadow-sm"
+                        ? "bg-white text-gray-900 shadow-sm font-semibold"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -736,9 +736,9 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("hr")}
-                    className={`px-4 py-2 rounded text-xs font-bold transition ${
+                    className={`px-4 py-2 rounded text-xs font-medium transition ${
                       activeTab === "hr"
-                        ? "bg-white text-gray-900 shadow-sm"
+                        ? "bg-white text-gray-900 shadow-sm font-semibold"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -747,9 +747,9 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("ef")}
-                    className={`px-4 py-2 rounded text-xs font-bold transition ${
+                    className={`px-4 py-2 rounded text-xs font-medium transition ${
                       activeTab === "ef"
-                        ? "bg-white text-gray-900 shadow-sm"
+                        ? "bg-white text-gray-900 shadow-sm font-semibold"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -758,9 +758,9 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("pk")}
-                    className={`px-4 py-2 rounded text-xs font-bold transition ${
+                    className={`px-4 py-2 rounded text-xs font-medium transition ${
                       activeTab === "pk"
-                        ? "bg-white text-gray-900 shadow-sm"
+                        ? "bg-white text-gray-900 shadow-sm font-semibold"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >

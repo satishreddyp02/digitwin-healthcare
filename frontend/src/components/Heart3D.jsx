@@ -290,9 +290,9 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
     <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4 w-full">
       <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-3 gap-3">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-gray-800 flex items-center gap-2">
-            <span>3D Cardiac Digital Twin Visualization</span>
-            <span className="text-xs bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded font-mono font-medium">
+          <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+            <span>3D Cardiac Visualization</span>
+            <span className="text-xs bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded font-medium">
               Synchronized 0D ODE
             </span>
           </h2>
@@ -348,16 +348,16 @@ export default function Heart3D({ sbp = 120, dbp = 80, hr = 72, ef = 55, edv = 1
             Drag with mouse to orbit & rotate
           </div>
 
-          <div className="absolute top-2.5 right-3 text-[11px] text-gray-500 bg-white/80 px-2 py-0.5 rounded border border-gray-200 backdrop-blur-sm font-mono">
-            &ang; X: {Math.round(rotation.x)}&deg; &bull; Y: {Math.round(rotation.y)}&deg;
+          <div className="absolute top-2.5 right-3 text-[11px] text-gray-500 bg-white/80 px-2 py-0.5 rounded border border-gray-200 backdrop-blur-sm font-medium tabular-nums">
+            Rotation: {Math.round(rotation.x)}&deg;, {Math.round(rotation.y)}&deg;
           </div>
         </div>
 
         {/* Telemetry Mapping Card */}
         <div className="lg:col-span-4 space-y-3.5">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2.5">
-            <span className="text-xs font-bold uppercase tracking-wide text-gray-700 block border-b border-gray-200 pb-1.5">
-              Hemodynamic Volumetric Telemetry
+            <span className="text-xs font-semibold text-gray-700 block border-b border-gray-200 pb-1.5">
+              Heart Volume &amp; Output
             </span>
 
             <div className="grid grid-cols-2 gap-2 text-xs">

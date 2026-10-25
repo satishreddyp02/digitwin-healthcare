@@ -142,9 +142,9 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
       <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-3 gap-3">
           <div>
-            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-              <span>Virtual Drug-Trial Clinical Pharmacology Repository</span>
-              <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded font-mono">
+            <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+              <span>Virtual Drug-Trial Repository</span>
+              <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded font-medium">
                 PK-PD v0.2
               </span>
             </h2>
@@ -189,10 +189,10 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
             </div>
 
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs space-y-1.5">
-              <span className="font-bold text-slate-800 uppercase tracking-wide text-[11px] block">
-                Evidence Provenance & Literature Citation
+              <span className="font-semibold text-slate-800 text-xs block">
+                Evidence Provenance &amp; Literature Citation
               </span>
-              <p className="text-slate-700 leading-relaxed font-mono text-[11px]">
+              <p className="text-slate-700 leading-relaxed text-xs">
                 {current.provenance}
               </p>
               <p className="text-slate-500 italic text-[11px]">
@@ -202,44 +202,44 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-900 space-y-1">
-                <span className="font-bold uppercase text-[11px] block">Contraindications</span>
-                <p className="text-[11px] leading-relaxed">{current.contraindications}</p>
+                <span className="font-semibold text-xs block">Contraindications</span>
+                <p className="text-xs leading-relaxed">{current.contraindications}</p>
               </div>
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-900 space-y-1">
-                <span className="font-bold uppercase text-[11px] block">Key Interactions</span>
-                <p className="text-[11px] leading-relaxed">{current.interactions}</p>
+                <span className="font-semibold text-xs block">Key Interactions</span>
+                <p className="text-xs leading-relaxed">{current.interactions}</p>
               </div>
             </div>
           </div>
 
           {/* Right Column: PK-PD Parameter Grid */}
           <div className="lg:col-span-5 bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block border-b border-gray-200 pb-1.5">
-              Kinetic & Dynamic Constants (0D ODE)
+            <span className="text-xs font-semibold text-gray-700 block border-b border-gray-200 pb-1.5">
+              Kinetic &amp; Dynamic Constants (0D ODE)
             </span>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="bg-white p-2.5 rounded border border-gray-200">
                 <span className="text-gray-500 block text-[11px]">Elimination Half-Life (t1/2)</span>
-                <span className="font-bold text-gray-800 text-sm font-mono">{current.halfLife}</span>
+                <span className="font-semibold text-gray-800 text-sm tabular-nums">{current.halfLife}</span>
               </div>
               <div className="bg-white p-2.5 rounded border border-gray-200">
                 <span className="text-gray-500 block text-[11px]">Volume of Distribution (Vd)</span>
-                <span className="font-bold text-gray-800 text-sm font-mono">{current.vd}</span>
+                <span className="font-semibold text-gray-800 text-sm tabular-nums">{current.vd}</span>
               </div>
               <div className="bg-white p-2.5 rounded border border-gray-200">
                 <span className="text-gray-500 block text-[11px]">Emax (Max Efficacy)</span>
-                <span className="font-bold text-teal-800 text-sm font-mono">{current.emax}</span>
+                <span className="font-semibold text-teal-800 text-sm tabular-nums">{current.emax}</span>
               </div>
               <div className="bg-white p-2.5 rounded border border-gray-200">
                 <span className="text-gray-500 block text-[11px]">EC50 (Sensitivity)</span>
-                <span className="font-bold text-teal-800 text-sm font-mono">{current.ec50}</span>
+                <span className="font-semibold text-teal-800 text-sm tabular-nums">{current.ec50}</span>
               </div>
             </div>
 
             <div className="p-2.5 bg-white rounded border border-gray-200 text-xs">
               <span className="text-gray-500 block text-[11px]">Target Hemodynamic Receptor/Parameter</span>
-              <span className="font-bold text-gray-800">{current.hemodynamicTarget}</span>
+              <span className="font-semibold text-gray-800">{current.hemodynamicTarget}</span>
             </div>
           </div>
         </div>
@@ -249,14 +249,14 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
       <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wide text-gray-800">
+            <h3 className="text-sm font-semibold text-gray-800">
               Candidate Clinical Trial Scenarios
             </h3>
             <p className="text-xs text-gray-500">
               Pre-configured clinical regimens for comparative baseline-vs-treatment evaluation.
             </p>
           </div>
-          <span className="text-xs text-gray-500">5 Scenarios Available</span>
+          <span className="text-xs text-gray-500 font-medium">5 Scenarios Available</span>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
@@ -267,26 +267,26 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
             >
               <div className="space-y-1.5 max-w-3xl">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-bold text-sm text-gray-900">{sc.title}</span>
-                  <span className="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-medium">
+                  <span className="font-semibold text-sm text-gray-900">{sc.title}</span>
+                  <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">
                     {sc.dose}
                   </span>
-                  <span className="text-[11px] bg-teal-50 text-teal-800 px-2 py-0.5 rounded font-medium border border-teal-200">
+                  <span className="text-xs bg-teal-50 text-teal-800 px-2 py-0.5 rounded font-medium border border-teal-200">
                     {sc.horizon}h duration
                   </span>
                 </div>
                 <p className="text-xs text-gray-600">
-                  <strong className="text-gray-800">Patient Cohort:</strong> {sc.patientType}
+                  <strong className="text-gray-800 font-semibold">Patient Cohort:</strong> {sc.patientType}
                 </p>
                 <p className="text-xs text-gray-500">
-                  <strong className="text-gray-700">Rationale:</strong> {sc.rationale} &bull; <strong className="text-gray-700">Expected:</strong> {sc.expectedOutcome}
+                  <strong className="text-gray-700 font-medium">Rationale:</strong> {sc.rationale} &bull; <strong className="text-gray-700 font-medium">Expected:</strong> {sc.expectedOutcome}
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={() => onSelectScenario(sc.id)}
-                className="self-start md:self-center shrink-0 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold py-2.5 px-4 rounded-md shadow-sm transition flex items-center gap-1.5"
+                className="self-start md:self-center shrink-0 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-2.5 px-4 rounded-md shadow-sm transition flex items-center gap-1.5"
               >
                 <span>Run Trial &rarr;</span>
               </button>
@@ -299,66 +299,66 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
       {result && (
         <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-            <h3 className="text-sm font-bold uppercase tracking-wide text-gray-800">
-              Current Trial Evaluation: Baseline vs. Hypothetical Output
+            <h3 className="text-sm font-semibold text-gray-800">
+              Trial Evaluation: Baseline vs. Simulated Outcome
             </h3>
             <span className="text-xs text-gray-500 font-medium">
-              Run ID #{result.run_id || "Active"}
+              Run #{result.run_id || "Active"}
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase font-bold text-[11px]">
+              <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold text-xs">
                 <tr>
                   <th className="py-2.5 px-3">Hemodynamic Metric</th>
-                  <th className="py-2.5 px-3">Baseline Value</th>
+                  <th className="py-2.5 px-3">Baseline</th>
                   <th className="py-2.5 px-3">Simulated Outcome</th>
-                  <th className="py-2.5 px-3">Absolute Change (Delta)</th>
-                  <th className="py-2.5 px-3">Physiological Limit</th>
+                  <th className="py-2.5 px-3">Change (Delta)</th>
+                  <th className="py-2.5 px-3">Normal Range</th>
                   <th className="py-2.5 px-3">Safety Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 font-mono">
+              <tbody className="divide-y divide-gray-100 tabular-nums">
                 <tr>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-gray-800">Systolic Blood Pressure (SBP)</td>
+                  <td className="py-2.5 px-3 font-semibold text-gray-800">Systolic Blood Pressure (SBP)</td>
                   <td className="py-2.5 px-3">{result.baseline.sbp} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-gray-900">{result.series.at(-1)?.sbp} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-teal-700">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">{result.series.at(-1)?.sbp} mmHg</td>
+                  <td className="py-2.5 px-3 font-semibold text-teal-700">
                     {(result.series.at(-1)?.sbp - result.baseline.sbp).toFixed(1)} mmHg
                   </td>
                   <td className="py-2.5 px-3 text-gray-500">90 - 140 mmHg</td>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-emerald-700">Controlled</td>
+                  <td className="py-2.5 px-3 font-semibold text-emerald-700">Controlled</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-gray-800">Diastolic Blood Pressure (DBP)</td>
+                  <td className="py-2.5 px-3 font-semibold text-gray-800">Diastolic Blood Pressure (DBP)</td>
                   <td className="py-2.5 px-3">{result.baseline.dbp} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-gray-900">{result.series.at(-1)?.dbp} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-teal-700">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">{result.series.at(-1)?.dbp} mmHg</td>
+                  <td className="py-2.5 px-3 font-semibold text-teal-700">
                     {(result.series.at(-1)?.dbp - result.baseline.dbp).toFixed(1)} mmHg
                   </td>
                   <td className="py-2.5 px-3 text-gray-500">60 - 90 mmHg</td>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-emerald-700">Controlled</td>
+                  <td className="py-2.5 px-3 font-semibold text-emerald-700">Controlled</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-gray-800">Mean Arterial Pressure (MAP)</td>
+                  <td className="py-2.5 px-3 font-semibold text-gray-800">Mean Arterial Pressure (MAP)</td>
                   <td className="py-2.5 px-3">{result.baseline.map} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-gray-900">{result.series.at(-1)?.map} mmHg</td>
-                  <td className="py-2.5 px-3 font-bold text-teal-700">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">{result.series.at(-1)?.map} mmHg</td>
+                  <td className="py-2.5 px-3 font-semibold text-teal-700">
                     {(result.series.at(-1)?.map - result.baseline.map).toFixed(1)} mmHg
                   </td>
                   <td className="py-2.5 px-3 text-gray-500">65 - 105 mmHg</td>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-emerald-700">Optimal Perfusion</td>
+                  <td className="py-2.5 px-3 font-semibold text-emerald-700">Optimal Perfusion</td>
                 </tr>
                 <tr>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-gray-800">Heart Rate (HR)</td>
+                  <td className="py-2.5 px-3 font-semibold text-gray-800">Heart Rate (HR)</td>
                   <td className="py-2.5 px-3">{result.baseline.hr} bpm</td>
-                  <td className="py-2.5 px-3 font-bold text-gray-900">{result.series.at(-1)?.hr} bpm</td>
-                  <td className="py-2.5 px-3 font-bold text-teal-700">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">{result.series.at(-1)?.hr} bpm</td>
+                  <td className="py-2.5 px-3 font-semibold text-teal-700">
                     {(result.series.at(-1)?.hr - result.baseline.hr).toFixed(1)} bpm
                   </td>
                   <td className="py-2.5 px-3 text-gray-500">50 - 100 bpm</td>
-                  <td className="py-2.5 px-3 font-sans font-semibold text-emerald-700">Normal Sinus</td>
+                  <td className="py-2.5 px-3 font-semibold text-emerald-700">Normal Sinus</td>
                 </tr>
               </tbody>
             </table>

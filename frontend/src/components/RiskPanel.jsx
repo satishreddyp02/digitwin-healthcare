@@ -4,17 +4,17 @@ export default function RiskPanel({ flags = [] }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-3">
       <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
-        <h3 className="text-sm font-bold uppercase tracking-wide text-gray-700">
+        <h3 className="text-sm font-semibold text-gray-800">
           Safety Alerts &amp; Warnings
         </h3>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 font-medium">
           Rule-based checks
         </span>
       </div>
 
       {flags.length === 0 ? (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 text-sm">
-          <span className="font-bold">No warnings:</span> All projected blood pressure and heart rate values remain within safe limits for this regimen.
+          <span className="font-semibold">No warnings:</span> All projected blood pressure and heart rate values remain within safe limits for this regimen.
         </div>
       ) : (
         <div className="space-y-2">
@@ -30,10 +30,10 @@ export default function RiskPanel({ flags = [] }) {
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold uppercase text-xs">
+                  <span className="font-semibold text-xs">
                     {isHigh ? "High Alert" : "Caution"}
                   </span>
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded bg-white/80 border border-gray-200">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded bg-white/80 border border-gray-200 capitalize">
                     {f.level}
                   </span>
                 </div>

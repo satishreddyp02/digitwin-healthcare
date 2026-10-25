@@ -25,8 +25,8 @@ export default {
         }
       },
       fontFamily: {
-        sans: ["'Plus Jakarta Sans'", "system-ui", "-apple-system", "sans-serif"],
-        mono: ["'JetBrains Mono'", "monospace"]
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "Helvetica", "Arial", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
         glow: "0 0 20px -5px rgba(13, 148, 136, 0.3)",

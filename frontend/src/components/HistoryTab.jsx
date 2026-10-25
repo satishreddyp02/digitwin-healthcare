@@ -52,9 +52,9 @@ export default function HistoryTab({ onLoadSession }) {
     <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4 w-full">
       <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-3 gap-3">
         <div>
-          <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-            <span>Clinical Session History & Database Records</span>
-            <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded font-mono">
+          <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+            <span>Clinical Session History</span>
+            <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded font-medium">
               SQLite Storage
             </span>
           </h2>
@@ -88,7 +88,7 @@ export default function HistoryTab({ onLoadSession }) {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase font-bold text-[11px]">
+            <thead className="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold text-xs">
               <tr>
                 <th className="py-2.5 px-3">Run ID</th>
                 <th className="py-2.5 px-3">Timestamp (UTC)</th>
@@ -101,26 +101,26 @@ export default function HistoryTab({ onLoadSession }) {
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 font-mono">
+            <tbody className="divide-y divide-gray-100 tabular-nums">
               {runs.map((r) => (
                 <tr key={r.id} className="hover:bg-gray-50/70 transition">
-                  <td className="py-2.5 px-3 font-bold text-gray-900">#{r.id}</td>
-                  <td className="py-2.5 px-3 text-gray-600 text-[11px] font-sans">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">#{r.id}</td>
+                  <td className="py-2.5 px-3 text-gray-600 text-xs">
                     {r.created_at?.replace("T", " ") || "--"}
                   </td>
                   <td className="py-2.5 px-3 font-semibold text-teal-800">{r.patient_id}</td>
-                  <td className="py-2.5 px-3 font-sans font-medium text-gray-800">{r.patient_name}</td>
+                  <td className="py-2.5 px-3 font-medium text-gray-800">{r.patient_name}</td>
                   <td className="py-2.5 px-3">
                     {r.baseline_sbp ? `${r.baseline_sbp} / ${r.baseline_dbp} mmHg` : "--"}
                   </td>
-                  <td className="py-2.5 px-3 font-bold text-gray-900">
+                  <td className="py-2.5 px-3 font-semibold text-gray-900">
                     {r.final_sbp ? `${r.final_sbp.toFixed(0)} / ${r.final_dbp.toFixed(0)} mmHg` : "--"}
                   </td>
-                  <td className="py-2.5 px-3 font-sans text-gray-600">
+                  <td className="py-2.5 px-3 text-gray-600">
                     {r.regimen?.map((d) => `${d.drug} (${d.dose_mg}mg)`).join(", ") || "None"}
                   </td>
-                  <td className="py-2.5 px-3 font-sans">
-                    <span className={`text-[11px] font-bold uppercase px-2 py-0.5 rounded border ${riskBadge[r.risk] || "bg-gray-50 text-gray-700"}`}>
+                  <td className="py-2.5 px-3">
+                    <span className={`text-xs font-semibold capitalize px-2 py-0.5 rounded border ${riskBadge[r.risk] || "bg-gray-50 text-gray-700"}`}>
                       {r.risk}
                     </span>
                   </td>
