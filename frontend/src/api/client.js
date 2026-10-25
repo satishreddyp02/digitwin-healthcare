@@ -1,0 +1,38 @@
+const BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+export async function getDrugs() {
+  const r = await fetch(`${BASE}/drugs`);
+  if (!r.ok) throw new Error("Could not load the drug list. Is the backend running on port 8000?");
+  return r.json();
+}
+
+export async function simulate(payload) {
+  const r = await fetch(`${BASE}/simulate`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(typeof e.detail === "string" ? e.detail : "Check the patient values and try again.");
+  }
+  return r.json();
+}
+export async function forecast(payload) {
+  const r = await fetch(`${BASE}/forecast`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(typeof e.detail === "string" ? e.detail : "Could not compute AI forecast.");
+  }
+  return r.json();
+}
+
+export async function getHealth() {
+  try {
+    const r = await fetch(`${BASE}/health`);
+    if (!r.ok) return { status: "offline", version: "unknown", ml_model_loaded: false };
+    return r.json();
+  } catch {
+    return { status: "offline", version: "unknown", ml_model_loaded: false };
+  }
+}
