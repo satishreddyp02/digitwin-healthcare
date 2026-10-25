@@ -10,6 +10,8 @@ import Trend from "../components/Trend.jsx";
 import Heart3D from "../components/Heart3D.jsx";
 import DrugsTab from "../components/DrugsTab.jsx";
 import HistoryTab from "../components/HistoryTab.jsx";
+import DrugOptimizer from "../components/DrugOptimizer.jsx";
+import FutureSafetyPrognosis from "../components/FutureSafetyPrognosis.jsx";
 import { Num } from "../components/ui.jsx";
 
 const riskBadge = {
@@ -21,7 +23,7 @@ const riskBadge = {
 export default function Dashboard() {
   const [drugs, setDrugs] = useState({});
   const [health, setHealth] = useState({ version: "0.2", ml_model_loaded: true });
-  const [mainView, setMainView] = useState("workstation"); // "workstation" | "heart3d" | "drugs" | "history"
+  const [mainView, setMainView] = useState("workstation"); // "workstation" | "heart3d" | "drugs" | "prognosis" | "history"
   const [activeTab, setActiveTab] = useState("bp");
   const [patient, setPatient] = useState({
     name: "Demo Patient",
@@ -348,6 +350,17 @@ export default function Dashboard() {
             </button>
             <button
               type="button"
+              onClick={() => setMainView("prognosis")}
+              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
+                mainView === "prognosis"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "text-slate-300 hover:text-white hover:bg-slate-700"
+              }`}
+            >
+              <span>Future Outcomes &amp; Safety</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setMainView("history")}
               className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1.5 ${
                 mainView === "history"
@@ -421,12 +434,25 @@ export default function Dashboard() {
         {mainView === "drugs" && (
           <DrugsTab
             drugs={drugs}
+            patient={patient}
             onSelectScenario={(scId) => {
               applyPreset(scId);
               setMainView("workstation");
             }}
+            onApplyOptimalRegimen={(optReg) => {
+              setRegimen(optReg);
+              executeSimulation(patient, optReg, horizon);
+              setMainView("workstation");
+            }}
             result={result}
           />
+        )}
+
+        {/* Future Outcomes & Safety Tab */}
+        {mainView === "prognosis" && (
+          <div className="space-y-6 w-full">
+            <FutureSafetyPrognosis patient={patient} regimen={regimen} horizon={horizon} />
+          </div>
         )}
 
         {/* Clinical Session History Tab (SQLite) */}
@@ -488,7 +514,11 @@ export default function Dashboard() {
         <section className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Box 1: Patient Information (5 columns) */}
           <div className="lg:col-span-5 h-full">
-            <PatientForm patient={patient} setPatient={setPatient} />
+            <PatientForm
+              patient={patient}
+              setPatient={setPatient}
+              onAutoSimulate={(p) => executeSimulation(p, regimen, horizon)}
+            />
           </div>
 
           {/* Box 2: Medications (4 columns) */}
@@ -571,6 +601,15 @@ export default function Dashboard() {
             </button>
           </div>
         </section>
+
+        {/* Intelligent Medication Selection / Best Drug Optimizer */}
+        <DrugOptimizer
+          patient={patient}
+          onApplyOptimalRegimen={(optReg) => {
+            setRegimen(optReg);
+            executeSimulation(patient, optReg, horizon);
+          }}
+        />
 
         {error && (
           <div role="alert" className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 font-medium">
@@ -803,6 +842,9 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+
+            {/* Future Outcomes & Drug Safety Prognosis */}
+            <FutureSafetyPrognosis patient={patient} regimen={regimen} horizon={horizon} />
 
             {/* Safety Alerts */}
             <RiskPanel flags={result.flags} />

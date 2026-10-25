@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DrugOptimizer from "./DrugOptimizer.jsx";
 
 /**
  * Virtual Drug-Trial / Drugs Tab
@@ -7,7 +8,7 @@ import { useState } from "react";
  * Documents PK-PD parameters, literature sources, calibration provenance,
  * and comparative baseline-vs-treatment outcomes.
  */
-export default function DrugsTab({ drugs, onSelectScenario, result }) {
+export default function DrugsTab({ drugs, onSelectScenario, result, patient, onApplyOptimalRegimen }) {
   const [selectedDrug, setSelectedDrug] = useState("phenylephrine");
 
   const drugMonographs = {
@@ -244,6 +245,14 @@ export default function DrugsTab({ drugs, onSelectScenario, result }) {
           </div>
         </div>
       </div>
+
+      {/* Patient Condition Best Medication Optimizer */}
+      {patient && onApplyOptimalRegimen && (
+        <DrugOptimizer
+          patient={patient}
+          onApplyOptimalRegimen={onApplyOptimalRegimen}
+        />
+      )}
 
       {/* 2. Candidate Scenarios List */}
       <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">

@@ -48,3 +48,29 @@ export async function getHistoryItem(runId) {
   if (!r.ok) throw new Error("Could not load historical simulation record.");
   return r.json();
 }
+
+export async function optimizeDrug(patient, horizon_h = 24) {
+  const r = await fetch(`${BASE}/optimize_drug?horizon_h=${horizon_h}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patient),
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(typeof e.detail === "string" ? e.detail : "Could not optimize drug regimen.");
+  }
+  return r.json();
+}
+
+export async function getFuturePrognosis(payload) {
+  const r = await fetch(`${BASE}/future_prognosis`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(typeof e.detail === "string" ? e.detail : "Could not calculate future prognosis.");
+  }
+  return r.json();
+}

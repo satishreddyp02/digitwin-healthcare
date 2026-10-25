@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Num, field, label } from "./ui.jsx";
+import VitalsCameraModal from "./VitalsCameraModal.jsx";
 
-export default function PatientForm({ patient, setPatient }) {
+export default function PatientForm({ patient, setPatient, onAutoSimulate }) {
+  const [scannerOpen, setScannerOpen] = useState(false);
   const set = (k) => (v) => setPatient((p) => ({ ...p, [k]: v }));
 
   const sbp = Number(patient.sbp) || 0;
@@ -14,14 +17,42 @@ export default function PatientForm({ patient, setPatient }) {
   const pp = hasBP ? (sbp - dbp).toFixed(0) : "--";
   const co = ((hr * ef * edv) / 1000).toFixed(2);
 
+  const handleApplyScannedVitals = (vitals) => {
+    setPatient((prev) => {
+      const updated = {
+        ...prev,
+        ...vitals,
+      };
+      if (onAutoSimulate) {
+        setTimeout(() => onAutoSimulate(updated), 50);
+      }
+      return updated;
+    });
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-4 shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-        <h2 className="text-sm font-semibold text-gray-800">
-          Patient Information
-        </h2>
-        <span className="text-xs text-gray-500 font-medium">Baseline</span>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-800">
+            Patient Information
+          </h2>
+          <span className="text-xs text-gray-500 font-medium">Baseline</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setScannerOpen(true)}
+          className="bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-semibold px-2.5 py-1 rounded transition flex items-center gap-1.5 shadow-sm"
+        >
+          <span>Scan Vitals (Camera)</span>
+        </button>
       </div>
+
+      <VitalsCameraModal
+        isOpen={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onApplyVitals={handleApplyScannedVitals}
+      />
 
       {/* Patient Identification Bar */}
       <div className="grid grid-cols-2 gap-3.5 bg-gray-50 p-3 rounded-lg border border-gray-200 text-xs">
