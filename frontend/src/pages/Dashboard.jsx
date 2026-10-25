@@ -843,8 +843,22 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Future Outcomes & Drug Safety Prognosis */}
-            <FutureSafetyPrognosis patient={patient} regimen={regimen} horizon={horizon} />
+            {/* Navigation banner to dedicated Future Outcomes & Safety view */}
+            <div className="bg-slate-900 text-white rounded-lg p-4 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+              <div className="space-y-0.5 text-left">
+                <span className="text-xs font-semibold text-teal-400 block">Future Outcomes &amp; Safety Prognosis</span>
+                <p className="text-xs text-slate-300">
+                  Inspect multi-horizon (1h, 6h, 24h, 72h) timeline trajectories, clearance kinetics, and cardiac organ workload indices.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMainView("prognosis")}
+                className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-4 py-2 rounded-md transition whitespace-nowrap shadow-sm"
+              >
+                Open Future Outcomes &amp; Safety &rarr;
+              </button>
+            </div>
 
             {/* Safety Alerts */}
             <RiskPanel flags={result.flags} />
